@@ -2,7 +2,11 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./menu-group.css";
 
-export class MenuGroup extends React.Component {
+interface MenuGroupProps {
+  name: string;
+};
+
+export class MenuGroup extends React.Component<MenuGroupProps> {
   state = { open: false };
   onClick = () => this.setState({ open: !this.state.open });
   render() {
