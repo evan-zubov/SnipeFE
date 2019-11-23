@@ -1,6 +1,5 @@
-
 import React, { Component } from "react";
-import CssBaseline from '@material-ui/core/CssBaseline';
+import CssBaseline from "@material-ui/core/CssBaseline";
 import { Body } from "./components/body/body";
 import "./app.css";
 import "@fortawesome/fontawesome-free/js/all";

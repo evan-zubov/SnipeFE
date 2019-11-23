@@ -4,7 +4,7 @@ import "./menu-group.css";
 
 interface MenuGroupProps {
   name: string;
-};
+}
 
 export class MenuGroup extends React.Component<MenuGroupProps> {
   state = { open: false };

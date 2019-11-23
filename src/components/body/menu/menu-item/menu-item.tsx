@@ -1,4 +1,6 @@
 import React from "react";
-import './menu-item.css';
+import "./menu-item.css";
 
-export const MenuItem = ({ children }) => <div className="menu-item">{children}</div>;
+export const MenuItem = ({ children }) => (
+  <div className="menu-item">{children}</div>
+);

@@ -233,7 +233,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export const Page1 = (props) => {
+export const Page1 = props => {
   const classes = useStyles(props);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -383,4 +383,4 @@ export const Page1 = (props) => {
       />
     </div>
   );
-}
+};
