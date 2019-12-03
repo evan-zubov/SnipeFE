@@ -4,7 +4,7 @@ import { MenuItem } from "./menu-item/menu-item";
 import { Link } from "react-router-dom";
 import "./menu.css";
 
-export const Menu = () => (
+export const Menu: React.FunctionComponent = () => (
   <div className="menu">
     <MenuGroup name="ggg">
       <MenuItem>
