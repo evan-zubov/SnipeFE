@@ -60,7 +60,7 @@ const rows = [
 
 type sortCheck = -1 | 0 | 1;
 
-function desc<T>(a: T, b: T, orderBy: keyof T): sortCheck {
+function desc<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
