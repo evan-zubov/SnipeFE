@@ -38,6 +38,23 @@
     "stylelint-config-recommended": "^3.0.0",
     "stylelint-order": "^3.1.1"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.css": [
+      "prettier --write",
+      "stylelint --fix",
+      "git add"
+    ],
+    "*.{js,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
