@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./menu-group.css";
 
-interface IMenuGroupProps {
+interface MenuGroupProps {
   name: string;
   children?: React.ReactNode;
 }
 
-export const MenuGroup: React.FC<IMenuGroupProps> = ({
+export const MenuGroup: React.FC<MenuGroupProps> = ({
   name,
   children
-}: IMenuGroupProps) => {
+}: MenuGroupProps) => {
   const [openStatus, setOpenStatus] = useState<boolean>(false);
 
   const onClick = (event: React.MouseEvent<HTMLElement>): void => {

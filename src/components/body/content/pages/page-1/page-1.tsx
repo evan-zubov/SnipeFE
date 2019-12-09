@@ -24,7 +24,7 @@ import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 
-interface IData {
+interface Data {
   calories: number;
   carbs: number;
   fat: number;
@@ -38,7 +38,7 @@ function createData(
   fat: number,
   carbs: number,
   protein: number
-): IData {
+): Data {
   return { name, calories, fat, carbs, protein };
 }
 
@@ -58,9 +58,9 @@ const rows = [
   createData("Oreo", 437, 18.0, 63, 4.0)
 ];
 
-type sortCheck = -1 | 0 | 1;
+type SortCheck = -1 | 0 | 1;
 
-function desc<T>(a: T, b: T, orderBy: keyof T): sortCheck {
+function desc<T>(a: T, b: T, orderBy: keyof T): SortCheck {
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -85,7 +85,7 @@ function stableSort<T>(array: T[], cmp: (a: T, b: T) => number): T[] {
 
 type Order = "asc" | "desc";
 
-function getSorting<K extends keyof IData>(
+function getSorting<K extends keyof Data>(
   order: Order,
   orderBy: K
 ): (
@@ -93,18 +93,18 @@ function getSorting<K extends keyof IData>(
   b: { [key in K]: number | string }
 ) => number {
   return order === "desc"
-    ? (a, b): sortCheck => desc(a, b, orderBy)
+    ? (a, b): SortCheck => desc(a, b, orderBy)
     : (a, b): number => -desc(a, b, orderBy);
 }
 
-interface IHeadCell {
+interface HeadCell {
   disablePadding: boolean;
-  id: keyof IData;
+  id: keyof Data;
   label: string;
   numeric: boolean;
 }
 
-const headCells: IHeadCell[] = [
+const headCells: HeadCell[] = [
   {
     id: "name",
     numeric: false,
@@ -146,12 +146,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface IEnhancedTableProps {
+interface EnhancedTableProps {
   classes: ReturnType<typeof useStyles>;
   numSelected: number;
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    property: keyof IData
+    property: keyof Data
   ) => void;
   onSelectAllClick: (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -162,7 +162,7 @@ interface IEnhancedTableProps {
   rowCount: number;
 }
 
-const EnhancedTableHead: React.FC<IEnhancedTableProps> = ({
+const EnhancedTableHead: React.FC<EnhancedTableProps> = ({
   classes,
   onSelectAllClick,
   order,
@@ -170,8 +170,8 @@ const EnhancedTableHead: React.FC<IEnhancedTableProps> = ({
   numSelected,
   rowCount,
   onRequestSort
-}: IEnhancedTableProps) => {
-  const createSortHandler = (property: keyof IData) => (
+}: EnhancedTableProps) => {
+  const createSortHandler = (property: keyof Data) => (
     event: React.MouseEvent<unknown>
   ): void => {
     onRequestSort(event, property);
@@ -236,12 +236,12 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface IEnhancedTableToolbarProps {
+interface EnhancedTableToolbarProps {
   numSelected: number;
 }
 
-const EnhancedTableToolbar: React.FC<IEnhancedTableToolbarProps> = (
-  props: IEnhancedTableToolbarProps
+const EnhancedTableToolbar: React.FC<EnhancedTableToolbarProps> = (
+  props: EnhancedTableToolbarProps
 ) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
@@ -285,7 +285,7 @@ const EnhancedTableToolbar: React.FC<IEnhancedTableToolbarProps> = (
 export const EnhancedTable: React.FC = () => {
   const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof IData>("calories");
+  const [orderBy, setOrderBy] = React.useState<keyof Data>("calories");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
@@ -293,7 +293,7 @@ export const EnhancedTable: React.FC = () => {
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof IData
+    property: keyof Data
   ): void => {
     const isDesc = orderBy === property && order === "desc";
     setOrder(isDesc ? "asc" : "desc");
