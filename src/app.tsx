@@ -1,7 +1,7 @@
 import React from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { Body } from "./components/body/body";
-import "./App.css";
+import "./app.css";
 import "@fortawesome/fontawesome-free/js/all";
 // import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
