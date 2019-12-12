@@ -1,7 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
 import clsx from "clsx";
-import { lighten, makeStyles } from "@material-ui/core/styles";
+import {
+  createStyles,
+  lighten,
+  makeStyles,
+  Theme
+} from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -20,7 +24,21 @@ import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 
-function createData(name, calories, fat, carbs, protein) {
+interface Data {
+  calories: number;
+  carbs: number;
+  fat: number;
+  name: string;
+  protein: number;
+}
+
+function createData(
+  name: string,
+  calories: number,
+  fat: number,
+  carbs: number,
+  protein: number
+): Data {
   return { name, calories, fat, carbs, protein };
 }
 
@@ -40,56 +58,122 @@ const rows = [
   createData("Oreo", 437, 18.0, 63, 4.0)
 ];
 
-function desc(a, b, orderBy) {
+type SortCheck = -1 | 0 | 1;
+
+function desc<T>(a: T, b: T, orderBy: keyof T): SortCheck {
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
   if (b[orderBy] > a[orderBy]) {
     return 1;
   }
+
   return 0;
 }
 
-function stableSort(array, cmp) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
+function stableSort<T>(array: T[], cmp: (a: T, b: T) => number): T[] {
+  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
   stabilizedThis.sort((a, b) => {
     const order = cmp(a[0], b[0]);
     if (order !== 0) return order;
+
     return a[1] - b[1];
   });
+
   return stabilizedThis.map(el => el[0]);
 }
 
-function getSorting(order, orderBy) {
+type Order = "asc" | "desc";
+
+function getSorting<K extends keyof Data>(
+  order: Order,
+  orderBy: K
+): (
+  a: { [key in K]: number | string },
+  b: { [key in K]: number | string }
+) => number {
   return order === "desc"
-    ? (a, b) => desc(a, b, orderBy)
-    : (a, b) => -desc(a, b, orderBy);
+    ? (a, b): SortCheck => desc(a, b, orderBy)
+    : (a, b): number => -desc(a, b, orderBy);
 }
 
-const headCells = [
+interface HeadCell {
+  disablePadding: boolean;
+  id: keyof Data;
+  label: string;
+  numeric: boolean;
+}
+
+const headCells: HeadCell[] = [
   {
     id: "name",
     numeric: false,
     disablePadding: true,
-    label: "Dessert (100g serving)"
+    label: "Dessert (100g serving)"
   },
   { id: "calories", numeric: true, disablePadding: false, label: "Calories" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
-  { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" }
+  { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
+  { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
+  { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" }
 ];
 
-function EnhancedTableHead(props) {
-  const {
-    classes,
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort
-  } = props;
-  const createSortHandler = property => event => {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: "100%"
+    },
+    paper: {
+      width: "100%",
+      marginBottom: theme.spacing(2)
+    },
+    table: {
+      minWidth: 750
+    },
+    tableWrapper: {
+      overflowX: "auto"
+    },
+    visuallyHidden: {
+      border: 0,
+      clip: "rect(0 0 0 0)",
+      height: 1,
+      margin: -1,
+      overflow: "hidden",
+      padding: 0,
+      position: "absolute",
+      top: 20,
+      width: 1
+    }
+  })
+);
+
+interface EnhancedTableProps {
+  classes: ReturnType<typeof useStyles>;
+  numSelected: number;
+  onRequestSort: (
+    event: React.MouseEvent<unknown>,
+    property: keyof Data
+  ) => void;
+  onSelectAllClick: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean
+  ) => void;
+  order: Order;
+  orderBy: string;
+  rowCount: number;
+}
+
+const EnhancedTableHead: React.FC<EnhancedTableProps> = ({
+  classes,
+  onSelectAllClick,
+  order,
+  orderBy,
+  numSelected,
+  rowCount,
+  onRequestSort
+}: EnhancedTableProps) => {
+  const createSortHandler = (property: keyof Data) => (
+    event: React.MouseEvent<unknown>
+  ): void => {
     onRequestSort(event, property);
   };
 
@@ -128,40 +212,38 @@ function EnhancedTableHead(props) {
       </TableRow>
     </TableHead>
   );
-}
-
-EnhancedTableHead.propTypes = {
-  classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired
 };
 
-const useToolbarStyles = makeStyles(theme => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1)
-  },
-  highlight:
-    theme.palette.type === "light"
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark
-        },
-  title: {
-    flex: "1 1 100%"
-  }
-}));
+const useToolbarStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(1)
+    },
+    highlight:
+      theme.palette.type === "light"
+        ? {
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+          }
+        : {
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark
+          },
+    title: {
+      flex: "1 1 100%"
+    }
+  })
+);
 
-const EnhancedTableToolbar = props => {
-  const classes = useToolbarStyles(props);
+interface EnhancedTableToolbarProps {
+  numSelected: number;
+}
+
+const EnhancedTableToolbar: React.FC<EnhancedTableToolbarProps> = (
+  props: EnhancedTableToolbarProps
+) => {
+  const classes = useToolbarStyles();
   const { numSelected } = props;
 
   return (
@@ -183,7 +265,6 @@ const EnhancedTableToolbar = props => {
           Nutrition
         </Typography>
       )}
-
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton aria-label="delete">
@@ -201,65 +282,42 @@ const EnhancedTableToolbar = props => {
   );
 };
 
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired
-};
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: "100%",
-    marginTop: theme.spacing(3)
-  },
-  paper: {
-    width: "100%",
-    marginBottom: theme.spacing(2)
-  },
-  table: {
-    minWidth: 750
-  },
-  tableWrapper: {
-    overflowX: "auto"
-  },
-  visuallyHidden: {
-    border: 0,
-    clip: "rect(0 0 0 0)",
-    height: 1,
-    margin: -1,
-    overflow: "hidden",
-    padding: 0,
-    position: "absolute",
-    top: 20,
-    width: 1
-  }
-}));
-
-export const Page1 = (props) => {
-  const classes = useStyles(props);
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("calories");
-  const [selected, setSelected] = React.useState<Array<string>>([]);
+export const EnhancedTable: React.FC = () => {
+  const classes = useStyles();
+  const [order, setOrder] = React.useState<Order>("asc");
+  const [orderBy, setOrderBy] = React.useState<keyof Data>("calories");
+  const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const handleRequestSort = (event, property) => {
+  const handleRequestSort = (
+    event: React.MouseEvent<unknown>,
+    property: keyof Data
+  ): void => {
     const isDesc = orderBy === property && order === "desc";
     setOrder(isDesc ? "asc" : "desc");
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = event => {
+  const handleSelectAllClick = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     if (event.target.checked) {
       const newSelecteds = rows.map(n => n.name);
       setSelected(newSelecteds);
+
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
+  const handleClick = (
+    event: React.MouseEvent<unknown>,
+    name: string
+  ): void => {
     const selectedIndex = selected.indexOf(name);
-    let newSelected: any[] = [];
+    let newSelected: string[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, name);
@@ -277,20 +335,24 @@ export const Page1 = (props) => {
     setSelected(newSelected);
   };
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (event: unknown, newPage: number): void => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = event => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  const handleChangeDense = event => {
+  const handleChangeDense = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     setDense(event.target.checked);
   };
 
-  const isSelected = name => selected.indexOf(name) !== -1;
+  const isSelected = (name: string): boolean => selected.indexOf(name) !== -1;
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
@@ -325,7 +387,7 @@ export const Page1 = (props) => {
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row.name)}
+                      onClick={(event): void => handleClick(event, row.name)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -367,12 +429,6 @@ export const Page1 = (props) => {
           count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
-          backIconButtonProps={{
-            "aria-label": "previous page"
-          }}
-          nextIconButtonProps={{
-            "aria-label": "next page"
-          }}
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
@@ -383,4 +439,4 @@ export const Page1 = (props) => {
       />
     </div>
   );
-}
+};

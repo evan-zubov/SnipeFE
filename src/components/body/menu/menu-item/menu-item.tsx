@@ -1,4 +1,10 @@
-import React from "react";
-import './menu-item.css';
+import React, { ReactNode } from "react";
+import "./menu-item.css";
 
-export const MenuItem = ({ children }) => <div className="menu-item">{children}</div>;
+interface MenuItemProps {
+  children?: ReactNode;
+}
+
+export const MenuItem: React.FunctionComponent = (props: MenuItemProps) => (
+  <div className="menu-item">{props.children}</div>
+);
