@@ -6,43 +6,21 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import { useTableStyles } from "./styles";
 import { Order } from "./sorting";
-import { Data } from "./data";
+import { ColumnDefinition } from "./get-columns";
 
 export type EnchancedTableHeadProps = {
   classes: ReturnType<typeof useTableStyles>;
   numSelected: number;
-  onRequestSort: (
-    event: React.MouseEvent<unknown>,
-    property: keyof Data
-  ) => void;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
   onSelectAllClick: (
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => void;
   order: Order;
-  orderBy: string;
+  orderBy?: string;
   rowCount: number;
+  cols: Array<ColumnDefinition>;
 };
-
-export interface HeadCell {
-  disablePadding: boolean;
-  id: keyof Data;
-  label: string;
-  numeric: boolean;
-}
-
-export const headCells: HeadCell[] = [
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: true,
-    label: "Dessert (100g serving)"
-  },
-  { id: "calories", numeric: true, disablePadding: false, label: "Calories" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
-  { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" }
-];
 
 export const EnchancedTableHead: React.FC<EnchancedTableHeadProps> = ({
   classes,
@@ -51,9 +29,10 @@ export const EnchancedTableHead: React.FC<EnchancedTableHeadProps> = ({
   orderBy,
   numSelected,
   rowCount,
-  onRequestSort
+  onRequestSort,
+  cols
 }: EnchancedTableHeadProps) => {
-  const createSortHandler = (property: keyof Data) => (
+  const createSortHandler = (property: string) => (
     event: React.MouseEvent<unknown>
   ): void => {
     onRequestSort(event, property);
@@ -70,20 +49,20 @@ export const EnchancedTableHead: React.FC<EnchancedTableHeadProps> = ({
             inputProps={{ "aria-label": "select all desserts" }}
           />
         </TableCell>
-        {headCells.map(headCell => (
+        {cols.map(col => (
           <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
-            padding={headCell.disablePadding ? "none" : "default"}
-            sortDirection={orderBy === headCell.id ? order : false}
+            key={col.name}
+            align={col.type === "number" ? "right" : "left"}
+            padding={col.disablePadding ? "none" : "default"}
+            sortDirection={orderBy === col.name ? order : false}
           >
             <TableSortLabel
-              active={orderBy === headCell.id}
+              active={orderBy === col.name}
               direction={order}
-              onClick={createSortHandler(headCell.id)}
+              onClick={createSortHandler(col.name)}
             >
-              {headCell.label}
-              {orderBy === headCell.id ? (
+              {col.name}
+              {orderBy === col.name ? (
                 <span className={classes.visuallyHidden}>
                   {order === "desc" ? "sorted descending" : "sorted ascending"}
                 </span>

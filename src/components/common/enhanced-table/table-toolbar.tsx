@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import {useToolbarStyles} from './styles';
+import { useToolbarStyles } from "./styles";
 
 export interface TableToolbarProps {
   numSelected: number;

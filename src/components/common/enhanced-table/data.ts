@@ -1,7 +1,3 @@
-export interface Data {
-  calories: number;
-  carbs: number;
-  fat: number;
-  name: string;
-  protein: number;
-}
+import { Selectable } from "./selectable";
+
+export type Data = Selectable & {};

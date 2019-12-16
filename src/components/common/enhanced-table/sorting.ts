@@ -1,8 +1,10 @@
-import { Data } from './data';
-
 export type SortCheck = -1 | 0 | 1;
 
-export function desc<T>(a: T, b: T, orderBy: keyof T): SortCheck {
+export function desc<T>(a: T, b: T, orderBy?: string): SortCheck {
+  if (!orderBy) {
+    return 0;
+  }
+
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -27,13 +29,10 @@ export function stableSort<T>(array: T[], cmp: (a: T, b: T) => number): T[] {
 
 export type Order = "asc" | "desc";
 
-export function getSorting<K extends keyof Data>(
+export function getSorting<T>(
   order: Order,
-  orderBy: K
-): (
-  a: { [key in K]: number | string },
-  b: { [key in K]: number | string }
-) => number {
+  orderBy?: string
+): (a: T, b: T) => number {
   return order === "desc"
     ? (a, b): SortCheck => desc(a, b, orderBy)
     : (a, b): number => -desc(a, b, orderBy);

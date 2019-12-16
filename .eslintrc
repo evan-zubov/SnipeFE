@@ -28,6 +28,7 @@
   },
   "rules": {
     "newline-before-return": "error",
+    "@typescript-eslint/ban-types": 2,
     "@typescript-eslint/interface-name-prefix": [
       "error",
       {
