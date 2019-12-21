@@ -3,8 +3,8 @@ import { EnhancedTable, Select } from "../../../../common/enhanced-table";
 
 export type LiveOpsPageProps = {
   rows: Array<any>;
-  select: Select<any>
+  select: Select;
 };
 export const LiveOpsPage = ({ rows, select }: LiveOpsPageProps) => (
-  <EnhancedTable rows={rows} select={select} />
+  <EnhancedTable keyBy="name" rows={rows} select={select} />
 );
