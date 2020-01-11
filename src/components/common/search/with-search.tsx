@@ -2,13 +2,9 @@ import React from "react";
 import { Search } from "./search";
 import { Grid, Paper } from "@material-ui/core";
 
-export type WithSearchProps = {
-  children: React.ReactNode;
-};
-
-export const WithSearch: React.FC<WithSearchProps> = ({
-  children
-}: WithSearchProps) => (
+export const withSearch = <T extends any>(
+  WrappedComponent: React.ComponentType<T>
+) => props => (
   <Grid container spacing={3}>
     <Grid item xs={12}>
       <Paper>
@@ -16,7 +12,7 @@ export const WithSearch: React.FC<WithSearchProps> = ({
       </Paper>
     </Grid>
     <Grid item xs={6}>
-      {children}
+      <WrappedComponent {...props} />
     </Grid>
   </Grid>
 );
