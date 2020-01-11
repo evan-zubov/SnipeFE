@@ -21,12 +21,14 @@ export type EnhancedTableProps = {
   rows: Array<Data>;
   select: Select;
   keyBy: string;
+  title: string;
 };
 
 export const EnhancedTable: React.FC<EnhancedTableProps> = ({
   rows,
   select,
-  keyBy
+  keyBy,
+  title
 }: EnhancedTableProps) => {
   const classes = useTableStyles();
   const [order, setOrder] = React.useState<Order>("asc");
@@ -70,7 +72,7 @@ export const EnhancedTable: React.FC<EnhancedTableProps> = ({
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableToolbar numSelected={selected.length} />
+        <TableToolbar numSelected={selected.length} title={title} />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}

@@ -10,13 +10,14 @@ import { useToolbarStyles } from "./styles";
 
 export interface TableToolbarProps {
   numSelected: number;
+  title: string;
 }
 
-export const TableToolbar: React.FC<TableToolbarProps> = (
-  props: TableToolbarProps
-) => {
+export const TableToolbar: React.FC<TableToolbarProps> = ({
+  numSelected,
+  title
+}: TableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
 
   return (
     <Toolbar
@@ -34,7 +35,7 @@ export const TableToolbar: React.FC<TableToolbarProps> = (
         </Typography>
       ) : (
         <Typography className={classes.title} variant="h6" id="tableTitle">
-          Nutrition
+          {title}
         </Typography>
       )}
       {numSelected > 0 ? (
