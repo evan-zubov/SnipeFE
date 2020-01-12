@@ -1,6 +1,8 @@
 {
   "translation": {
     "Menu.LiveOps": "LiveOps",
-    "Menu.LiveOps.SearchPlayers": "Search Players"
+    "Menu.LiveOps.SearchPlayers": "Search Players",
+    "Breadcrumbs.search-players": "Search Players",
+    "Breadcrumbs.edit": "Edit"
   }
 }

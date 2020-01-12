@@ -1,19 +1,19 @@
 import React from "react";
-import { EnhancedTable, Select } from "../../../../common/enhanced-table";
-import { withSearch } from "../../../../common/search";
+import { Select } from "../../../../common/enhanced-table";
+import { PageLayout } from "src/components/common/page-layout/page-layout";
+import { PATHS } from "../../routes";
 
 export type LiveOpsPageProps = {
   rows: Array<any>;
   select: Select;
 };
 
-export const LiveOpsPageUI: React.FC<LiveOpsPageProps> = ({
+export const LiveOpsPage: React.FC<LiveOpsPageProps> = ({
   rows,
   select
 }: LiveOpsPageProps) => (
-  <EnhancedTable keyBy="name" rows={rows} select={select} title="LiveOps" />
-);
-
-export const LiveOpsPage: React.FC<LiveOpsPageProps> = withSearch(
-  LiveOpsPageUI
+  <PageLayout
+    baseRoute={PATHS.liveOps.searchPlayers}
+    tableProps={{ keyBy: "name", rows, select, title: "LiveOps" }}
+  />
 );

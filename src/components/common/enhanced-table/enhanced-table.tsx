@@ -22,13 +22,15 @@ export type EnhancedTableProps = {
   select: Select;
   keyBy: string;
   title: string;
+  onEditClick?: () => void;
 };
 
 export const EnhancedTable: React.FC<EnhancedTableProps> = ({
   rows,
   select,
   keyBy,
-  title
+  title,
+  onEditClick
 }: EnhancedTableProps) => {
   const classes = useTableStyles();
   const [order, setOrder] = React.useState<Order>("asc");
@@ -72,7 +74,11 @@ export const EnhancedTable: React.FC<EnhancedTableProps> = ({
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableToolbar numSelected={selected.length} title={title} />
+        <TableToolbar
+          numSelected={selected.length}
+          title={title}
+          onEditClick={onEditClick}
+        />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -114,7 +120,7 @@ export const EnhancedTable: React.FC<EnhancedTableProps> = ({
                       </TableCell>
                       {cols.map(col => (
                         <TableCell
-                          key={row[keyBy]}
+                          key={col.name}
                           align={col.type === "number" ? "right" : "left"}
                         >
                           {row[col.name]}

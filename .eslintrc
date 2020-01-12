@@ -16,11 +16,7 @@
   "env": {
     "es2020": true
   },
-  "plugins": [
-    "@typescript-eslint",
-    "react",
-    "prettier"
-  ],
+  "plugins": ["@typescript-eslint", "react", "prettier"],
   "settings": {
     "react": {
       "version": "detect"

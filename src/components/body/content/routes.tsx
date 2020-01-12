@@ -1,16 +1,17 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import { LiveOpsPageConatiner } from './pages/live-ops/live-ops.page.container';
+import { LiveOpsPageConatiner } from "./pages/live-ops/live-ops.page.container";
 
 export const PATHS = {
   liveOps: {
-    searchPlayers: "/live-ops/search-players"
+    searchPlayers: (id = "/:id?", tab = "/:tab?") =>
+      `/live-ops/search-players${id}${tab}`
   }
 };
 
 export const Routes = () => (
   <Switch>
-    <Route path={PATHS.liveOps.searchPlayers}>
+    <Route path={PATHS.liveOps.searchPlayers()}>
       <LiveOpsPageConatiner />
     </Route>
     <Route path="/2">2</Route>
