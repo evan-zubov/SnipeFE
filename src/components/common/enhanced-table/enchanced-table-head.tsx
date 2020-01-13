@@ -70,6 +70,7 @@ export const EnchancedTableHead: React.FC<EnchancedTableHeadProps> = ({
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell size="small" />
       </TableRow>
     </TableHead>
   );

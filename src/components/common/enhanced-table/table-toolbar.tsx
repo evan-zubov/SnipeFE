@@ -5,20 +5,17 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { useToolbarStyles } from "./styles";
 
 export interface TableToolbarProps {
   numSelected: number;
   title: string;
-  onEditClick?: () => void;
 }
 
 export const TableToolbar: React.FC<TableToolbarProps> = ({
   numSelected,
-  title,
-  onEditClick
+  title
 }: TableToolbarProps) => {
   const classes = useToolbarStyles();
 
@@ -44,13 +41,6 @@ export const TableToolbar: React.FC<TableToolbarProps> = ({
 
       {numSelected > 0 ? (
         <React.Fragment>
-          {numSelected === 1 && (
-            <Tooltip title="Edit">
-              <IconButton aria-label="edit" onClick={onEditClick}>
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
-          )}
           <Tooltip title="Delete">
             <IconButton aria-label="delete">
               <DeleteIcon />

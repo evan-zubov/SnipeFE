@@ -29,13 +29,9 @@ export const PageLayout = compose(
   withRouter,
   withTranslation()
 )(({ tableProps, baseRoute, history, t }: PageLayoutProps) => {
-  const selection = tableProps.rows.filter(row => row.selected);
   const { id: editId, tab } = useParams();
   const basePath = baseRoute("", "");
-  const editPath = baseRoute(
-    selection.length === 1 ? `/${selection[0]["id"]}` : "",
-    ""
-  );
+  const editPath = row => baseRoute(`/${row["id"]}`, "");
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -48,12 +44,8 @@ export const PageLayout = compose(
           <Link component={RouterLink} color="inherit" to={basePath}>
             Search
           </Link>
-          {editId && (
-            <Link component={RouterLink} color="inherit" to={basePath}>
-              {editId}
-            </Link>
-          )}
-          {tab && <Typography color="textPrimary">123</Typography>}
+          {editId && <Typography color="textPrimary">{editId}</Typography>}
+          {tab && <Typography color="textPrimary">{tab}</Typography>}
         </Breadcrumbs>
       </Grid>
       <Grid item xs={12}>
@@ -78,7 +70,7 @@ export const PageLayout = compose(
         ) : (
           <EnhancedTable
             {...tableProps}
-            onEditClick={() => history.push(editPath)}
+            onEditClick={row => history.push(editPath(row))}
           />
         )}
       </Grid>

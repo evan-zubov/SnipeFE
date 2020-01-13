@@ -8,12 +8,16 @@ import Paper from "@material-ui/core/Paper";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
 import { useTableStyles } from "./styles";
 import { TableToolbar } from "./table-toolbar";
 import { Order, stableSort, getSorting } from "./sorting";
 import { EnchancedTableHead } from "./enchanced-table-head";
 import { getColumns } from "./get-columns";
 import { Data } from "./data";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 
 export type Select = (selectedRows: Array<Data>) => void;
 
@@ -22,7 +26,7 @@ export type EnhancedTableProps = {
   select: Select;
   keyBy: string;
   title: string;
-  onEditClick?: () => void;
+  onEditClick?: (item: any) => void;
 };
 
 export const EnhancedTable: React.FC<EnhancedTableProps> = ({
@@ -74,11 +78,7 @@ export const EnhancedTable: React.FC<EnhancedTableProps> = ({
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableToolbar
-          numSelected={selected.length}
-          title={title}
-          onEditClick={onEditClick}
-        />
+        <TableToolbar numSelected={selected.length} title={title} />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -126,6 +126,21 @@ export const EnhancedTable: React.FC<EnhancedTableProps> = ({
                           {row[col.name]}
                         </TableCell>
                       ))}
+                      <TableCell align="right" padding="none">
+                        <Tooltip title="Edit">
+                          <IconButton
+                            aria-label="edit"
+                            onClick={() => onEditClick && onEditClick(row)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                          <IconButton aria-label="delete">
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
                     </TableRow>
                   );
                 })}
