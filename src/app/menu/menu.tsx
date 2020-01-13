@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { withTranslation } from "react-i18next";
 import { Link, Box } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
@@ -8,6 +8,7 @@ import TreeView from "@material-ui/lab/TreeView";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
+import { menuResource, MenuItem } from "../../api/resources/menu-resource";
 
 const useStyles = makeStyles({
   root: {
@@ -17,8 +18,27 @@ const useStyles = makeStyles({
   }
 });
 
+const renderMenuItem = (classes, t, { name, url, children }: MenuItem) =>
+  children ? (
+    <TreeItem key={name} nodeId="menuItem.name" label={t(name)}>
+      {children.map(c => renderMenuItem(classes, t, c))}
+    </TreeItem>
+  ) : (
+    url && (
+      <Link key={name} component={RouterLink} to={url} color="textPrimary">
+        {t(name)}
+      </Link>
+    )
+  );
+
 export const Menu = withTranslation()(({ t }) => {
   const classes = useStyles();
+  const [menuItems, setMenuItems] = useState<Array<MenuItem>>([]);
+  useEffect(() => {
+    menuResource
+      .GET({ queryParams: { a: "1", b: "2" } })
+      .then(({ data }) => setMenuItems(data));
+  }, []);
 
   return (
     <Box component="span" m={2}>
@@ -27,15 +47,7 @@ export const Menu = withTranslation()(({ t }) => {
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
       >
-        <TreeItem nodeId="1" label={t("Menu.LiveOps")}>
-          <Link
-            component={RouterLink}
-            to={PATHS.liveOps.searchPlayers("", "")}
-            color="textPrimary"
-          >
-            {t("Menu.LiveOps.SearchPlayers")}
-          </Link>
-        </TreeItem>
+        {menuItems.map(m => renderMenuItem(classes, t, m))}
       </TreeView>
     </Box>
   );

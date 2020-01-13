@@ -1,12 +1,15 @@
+import url from "url";
+
 export type MethodName = "GET" | "POST" | "DELETE" | "PUT";
 export type ApiResponse<T> = { data: T };
 export type QueryParams = Record<string, string>;
 export type Body = Record<string, string>;
-export type Method<R> = (
-  queryParams: QueryParams,
-  body: Body
-) => Promise<ApiResponse<R>>;
+export type Method<R> = (p?: RequestParams) => Promise<ApiResponse<R>>;
 export type Fetch<T> = (req: Request) => Promise<ApiResponse<T>>;
+export type RequestParams = {
+  queryParams?: QueryParams;
+  body?: Body;
+};
 
 export const defaultFetcher: Fetch<GenericData> = req =>
   fetch(req)
@@ -19,21 +22,20 @@ export const getMethod = <T>(
   urlString: string,
   method: MethodName,
   doFetch: Fetch<T> = defaultFetcher as Fetch<T>
-): Method<T> => (
-  queryParams: QueryParams,
-  body: Body
-): Promise<ApiResponse<T>> => {
-  const url = new URL(urlString);
-  if (queryParams) {
-    Object.keys(queryParams).forEach(key =>
-      url.searchParams.append(key, queryParams[key])
-    );
-  }
-
-  const request = new Request(url.toString(), {
-    method,
-    body: JSON.stringify(body)
-  });
+): Method<T> => ({ queryParams, body }: RequestParams = {}): Promise<
+  ApiResponse<T>
+> => {
+  const request = new Request(
+    url.format({
+      host: window.location.host,
+      pathname: urlString,
+      query: queryParams
+    }),
+    {
+      method,
+      body: JSON.stringify(body)
+    }
+  );
 
   return doFetch(request);
 };
@@ -41,9 +43,9 @@ export const getMethod = <T>(
 export type GenericData = {};
 export type Resource<T> = { [key in MethodName]: Method<T> };
 
-export const resource = (url: string): Resource<GenericData> => ({
-  GET: getMethod<GenericData>(url, "GET"),
-  POST: getMethod<GenericData>(url, "POST"),
-  PUT: getMethod<GenericData>(url, "PUT"),
-  DELETE: getMethod<GenericData>(url, "DELETE")
+export const resource = <T>(url: string, doFetch?: Fetch<T>): Resource<T> => ({
+  GET: getMethod<T>(url, "GET", doFetch),
+  POST: getMethod<T>(url, "POST", doFetch),
+  PUT: getMethod<T>(url, "PUT", doFetch),
+  DELETE: getMethod<T>(url, "DELETE", doFetch)
 });

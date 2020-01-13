@@ -24,7 +24,8 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
     "redux": "^4.0.5",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.2",
+    "url": "^0.11.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2",
