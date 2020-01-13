@@ -1,6 +1,6 @@
 import React from "react";
-import { Select } from "../../../../common/enhanced-table";
-import { PageLayout } from "src/components/common/page-layout/page-layout";
+import { Select } from "../../../../components/enhanced-table";
+import { PageLayout } from "src/components/page-layout/page-layout";
 import { PATHS } from "../../routes";
 
 export type LiveOpsPageProps = {

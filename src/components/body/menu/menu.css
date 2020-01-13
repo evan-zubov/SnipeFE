@@ -1,9 +1,0 @@
-.menu {
-    box-shadow: 0 0 5px #999;
-    box-sizing: border-box;
-    cursor: pointer;
-    height: calc(100% - 70px);
-    padding: 30px;
-    position: absolute;    
-    width: 400px;
-}
