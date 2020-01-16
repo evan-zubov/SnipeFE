@@ -2,7 +2,6 @@ import React from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import "./app.css";
 import "@fortawesome/fontawesome-free/js/all";
-// import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -14,6 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import { Menu } from "./menu/menu";
 import { Routes } from "./routes/routes";
+import { LoginModal } from "../components/modal-windows";
 
 const drawerWidth = 300;
 
@@ -51,7 +51,7 @@ export const App: React.FunctionComponent = () => {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6">News</Typography>
-            <Button color="inherit">Login</Button>
+            <LoginModal />
           </Toolbar>
         </AppBar>
         <Drawer
