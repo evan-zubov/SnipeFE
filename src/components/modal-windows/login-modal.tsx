@@ -6,6 +6,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import { LoginForm } from "../forms/login-form";
 import { makeStyles } from "@material-ui/core/styles";
+import { Box } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   closeButton: {
@@ -34,7 +35,7 @@ export const LoginModal: React.FC = () => {
       <Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby="form-dialog-title"
+        aria-labelledby="login-form-dialog"
       >
         <IconButton
           aria-label="close"
@@ -43,9 +44,11 @@ export const LoginModal: React.FC = () => {
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent>
-          <LoginForm />
-        </DialogContent>
+        <Box py={2}>
+          <DialogContent>
+            <LoginForm />
+          </DialogContent>
+        </Box>
       </Dialog>
     </>
   );
