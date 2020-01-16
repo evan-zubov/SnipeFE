@@ -18,18 +18,23 @@ const useStyles = makeStyles({
   }
 });
 
-const renderMenuItem = (classes, t, { name, url, children }: MenuItem) =>
-  children ? (
-    <TreeItem key={name} nodeId="menuItem.name" label={t(name)}>
-      {children.map(c => renderMenuItem(classes, t, c))}
-    </TreeItem>
-  ) : (
-    url && (
-      <Link key={name} component={RouterLink} to={url} color="textPrimary">
-        {t(name)}
-      </Link>
-    )
-  );
+const renderMenuItem = (classes, t, { name, url, children }: MenuItem) => (
+  <TreeItem
+    key={name}
+    nodeId={name}
+    label={
+      url ? (
+        <Link key={name} component={RouterLink} to={url} color="textPrimary">
+          {t(name)}
+        </Link>
+      ) : (
+        t(name)
+      )
+    }
+  >
+    {children && children.map(c => renderMenuItem(classes, t, c))}
+  </TreeItem>
+);
 
 export const Menu = withTranslation()(({ t }) => {
   const classes = useStyles();

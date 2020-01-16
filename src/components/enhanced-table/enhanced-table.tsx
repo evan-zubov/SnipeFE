@@ -12,17 +12,17 @@ import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import { useTableStyles } from "./styles";
 import { TableToolbar } from "./table-toolbar";
-import { Order, stableSort, getSorting } from "./sorting";
 import { EnchancedTableHead } from "./enchanced-table-head";
 import { getColumns } from "./get-columns";
 import { Data } from "./data";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import { Order } from "./order";
 
 export type Select = (selectedRows: Array<Data>) => void;
 
 export type EnhancedTableProps = {
-  rows: Array<Data>;
+  rows?: Array<Data>;
   select: Select;
   keyBy: string;
   title: string;
@@ -30,7 +30,7 @@ export type EnhancedTableProps = {
 };
 
 export const EnhancedTable: React.FC<EnhancedTableProps> = ({
-  rows,
+  rows = [],
   select,
   keyBy,
   title,
@@ -97,53 +97,51 @@ export const EnhancedTable: React.FC<EnhancedTableProps> = ({
               rowCount={rows.length}
             />
             <TableBody>
-              {stableSort<Data>(rows, getSorting<Data>(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
+              {rows.map((row, index) => {
+                const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(): void => select([row])}
-                      role="checkbox"
-                      aria-checked={row.selected}
-                      tabIndex={-1}
-                      key={row[keyBy]}
-                      selected={row.selected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={row.selected}
-                          inputProps={{ "aria-labelledby": labelId }}
-                        />
+                return (
+                  <TableRow
+                    hover
+                    onClick={(): void => select([row])}
+                    role="checkbox"
+                    aria-checked={row.selected}
+                    tabIndex={-1}
+                    key={row[keyBy]}
+                    selected={row.selected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={row.selected}
+                        inputProps={{ "aria-labelledby": labelId }}
+                      />
+                    </TableCell>
+                    {cols.map(col => (
+                      <TableCell
+                        key={col.name}
+                        align={col.type === "number" ? "right" : "left"}
+                      >
+                        {row[col.name]}
                       </TableCell>
-                      {cols.map(col => (
-                        <TableCell
-                          key={col.name}
-                          align={col.type === "number" ? "right" : "left"}
+                    ))}
+                    <TableCell align="right" padding="none">
+                      <Tooltip title="Edit">
+                        <IconButton
+                          aria-label="edit"
+                          onClick={() => onEditClick && onEditClick(row)}
                         >
-                          {row[col.name]}
-                        </TableCell>
-                      ))}
-                      <TableCell align="right" padding="none">
-                        <Tooltip title="Edit">
-                          <IconButton
-                            aria-label="edit"
-                            onClick={() => onEditClick && onEditClick(row)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                          <IconButton aria-label="delete">
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete">
+                        <IconButton aria-label="delete">
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
                   <TableCell colSpan={6} />

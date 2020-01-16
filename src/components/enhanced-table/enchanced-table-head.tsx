@@ -5,8 +5,8 @@ import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import { useTableStyles } from "./styles";
-import { Order } from "./sorting";
 import { ColumnDefinition } from "./get-columns";
+import { Order } from "./order";
 
 export type EnchancedTableHeadProps = {
   classes: ReturnType<typeof useTableStyles>;

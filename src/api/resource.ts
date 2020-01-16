@@ -1,7 +1,15 @@
 import url from "url";
 
 export type MethodName = "GET" | "POST" | "DELETE" | "PUT";
-export type ApiResponse<T> = { data: T };
+export type Pagination = {
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+};
+export type ApiResponse<T> = {
+  data: T;
+  pagination?: Pagination;
+};
 export type QueryParams = Record<string, string>;
 export type Body = Record<string, string>;
 export type Method<R> = (p?: RequestParams) => Promise<ApiResponse<R>>;
