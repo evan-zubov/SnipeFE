@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { resource } from "src/api";
-import { useParams } from "react-router-dom";
+import { useParams, generatePath } from "react-router-dom";
 import { map } from "lodash";
 import { TextField, Typography, Grid, Button } from "@material-ui/core";
+import { fetchUsers } from "src/api/resources/users-resource";
 
 export type FormViewProps = {
   dataUrl: string;
@@ -19,15 +20,12 @@ export const FormView = ({
   const { register, handleSubmit, reset } = useForm();
   const [defaultValues, setDefaultValues] = useState(initialValues);
   const [dataResource, setDataResource] = useState(initialValues);
-  const id = useParams()[idParam];
+  const params = useParams<any>();
+  const { id } = params;
 
   useEffect(() => {
     if (dataUrl) {
-      setDataResource(
-        resource(dataUrl.replace(`/{${idParam}}`, `/${id}`), () => {
-          return Promise.resolve({ data: { abc: "123", bcd: "234" } });
-        })
-      );
+      setDataResource(resource(generatePath(dataUrl, params), fetchUsers));
     }
   }, [dataUrl, id]);
 

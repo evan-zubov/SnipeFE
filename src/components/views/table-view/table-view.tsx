@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Pagination, resource } from "src/api";
-import { range, padStart } from "lodash";
 import { Grid } from "@material-ui/core";
 import { Search } from "src/components/search";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import {
+  withRouter,
+  RouteComponentProps,
+  useParams,
+  generatePath
+} from "react-router-dom";
 import { EnhancedTable } from "src/components/enhanced-table";
+import { fetchUsers } from "../../../api/resources/users-resource";
 
 export type TableViewProps = RouteComponentProps & {
   editUrl: string;
   dataUrl: string;
-  idKey?: string;
+  idField?: string;
   idParam?: string;
+  match?: any;
 };
 
 export const TableView = withRouter<any, any>(
@@ -18,27 +24,19 @@ export const TableView = withRouter<any, any>(
     editUrl,
     dataUrl,
     idParam = "id",
-    idKey = "id",
-    history
+    idField = "id",
+    history,
+    match
   }: TableViewProps) => {
     const [rows, setRows] = useState<Array<any>>([]);
     const [pagination, setPagination] = useState<Pagination | undefined>();
+    const { params } = match;
 
     useEffect(() => {
-      resource<Array<any>>(dataUrl, request => {
-        console.log(request);
-
-        return Promise.resolve({
-          data: range(5).map(id => ({
-            id,
-            uid: padStart(id.toString()),
-            name: `${request.url} ${id}`
-          }))
-        });
-      })
+      resource<any>(dataUrl, fetchUsers)
         .GET()
         .then(({ data, pagination }) => {
-          setRows(data.map(d => ({ ...d, selected: false })));
+          data && setRows(data.map(d => ({ ...d, selected: false })));
           setPagination(pagination);
         });
     }, [dataUrl]);
@@ -63,9 +61,11 @@ export const TableView = withRouter<any, any>(
             rows={rows}
             select={select}
             title={dataUrl}
-            onEditClick={row =>
-              history.push(editUrl.replace(`:${idParam}`, row[idKey]))
-            }
+            onEditClick={row => {
+              history.push(
+                generatePath(editUrl, { ...params, [idParam]: row[idField] })
+              );
+            }}
           />
         </Grid>
       </Grid>
